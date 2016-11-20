@@ -10,17 +10,9 @@ interface ICyEdgeData extends ICyElementData {
 
 export class CyGraph {
 
-  get id(): string {
-    return this.id;
+  constructor(public id: string, public edges: CyEdge[], public nodes: CyNode[]) {
   }
 
-  get edges(): CyEdge[] {
-    return this.edges;
-  }
-
-  get nodes(): CyNode[] {
-    return this.nodes;
-  }
 }
 
 interface ICyElement {
@@ -42,6 +34,11 @@ abstract class CyElement {
 }
 
 export class CyEdge extends CyElement implements ICyElement {
+
+  constructor(data: ICyEdgeData) {
+    super(data);
+  }
+
   get group(): string {
     return 'edges';
   }

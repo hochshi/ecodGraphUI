@@ -1,0 +1,2 @@
+export const OPEN_SUBARCH = 'OPEN_SUBARCH';
+export const OPEN_ALIGNMENTS = 'OPEN_ALIGNMENTS';

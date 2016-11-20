@@ -1,57 +1,50 @@
-import { Injectable }    from '@angular/core';
-import { Http } from '@angular/http';
+import {Injectable} from '@angular/core';
+import {Http, Response} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-
 import {CyGraph} from '../models/cy.graph';
+import {Observable} from 'rxjs';
+import {IDomainAlignment} from '../models/domain.alignment';
 
 @Injectable()
 export class EcodService {
   private baseUrl = 'app/ecod';  // remark: URL to web api
+  private algnUrl = 'app/alignments';
   constructor(private http: Http) { }
 
-  getGraph(): Promise<CyGraph> {
-    return this.http.get(this.baseUrl)
-      .toPromise()
-      .then(response => response.json().data[0] as CyGraph)
+  getAlignments(): Observable<IDomainAlignment[]> {
+    return this.http.get(this.algnUrl)
+      .map(this.extractAllData)
       .catch(this.handleError);
   }
 
-  private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error); // for demo purposes only
-    return Promise.reject(error.message || error);
+  getGraph(): Observable<CyGraph> {
+    return this.http.get(this.baseUrl)
+      .map(this.extractData)
+      .catch(this.handleError);
   }
 
-  // getHeroes(): Promise<CyGraph> {
-  //   return this.http.get(this.heroesUrl)
-  //     .toPromise()
-  //     .then(response => response.json().data as CyGraph)
-  //     .catch(this.handleError);
-  // }
-  // getHero(id: number): Promise<CyGraph> {
-  //   return this.getHeroes()
-  //     .then(heroes => heroes.find(hero => hero.id === id));
-  // }
-  // delete(id: number): Promise<void> {
-  //   const url = `${this.heroesUrl}/${id}`;
-  //   return this.http.delete(url, {headers: this.headers})
-  //     .toPromise()
-  //     .then(() => null)
-  //     .catch(this.handleError);
-  // }
-  // create(name: string): Promise<Hero> {
-  //   return this.http
-  //     .post(this.heroesUrl, JSON.stringify({name: name}), {headers: this.headers})
-  //     .toPromise()
-  //     .then(res => res.json().data)
-  //     .catch(this.handleError);
-  // }
-  // update(hero: Hero): Promise<Hero> {
-  //   const url = `${this.heroesUrl}/${hero.id}`;
-  //   return this.http
-  //     .put(url, JSON.stringify(hero), {headers: this.headers})
-  //     .toPromise()
-  //     .then(() => hero)
-  //     .catch(this.handleError);
-  // }
+  private extractAllData(res: Response) {
+    let body = res.json();
+    return body.data || {};
+  }
+
+  private extractData(res: Response) {
+    let body = res.json();
+    return body.data[0] || {};
+  }
+
+  private handleError(error: Response | any) {
+    // in a real world app, we might use a remote logging infrastructure
+    let errMsg: string;
+    if (error instanceof Response) {
+      const body = error.json() || '';
+      const err = body.error || JSON.stringify(body);
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    } else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+    console.error(errMsg);
+    return Observable.throw(errMsg);
+  }
 
 }

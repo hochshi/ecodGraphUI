@@ -3,12 +3,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {routing, RootComponent} from './routes';
 import {store} from './reducers';
-
-// imports for loading & configuring the in-memory web api
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataServiceOverride }  from './providers/in-memory-data.provider';
-
-
+import {InMemoryWebApiModule} from 'angular-in-memory-web-api';
+import {InMemoryDataServiceOverride} from './providers/in-memory-data.provider';
 import {AppComponent} from './containers/App';
 import {FooterComponent} from './components/Footer';
 import {HeaderComponent} from './components/Header';
@@ -20,6 +16,9 @@ import {HttpModule} from '@angular/http';
 import {EcodService} from './services/ecod.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {Ng2BreadcrumbModule, BreadcrumbService} from 'ng2-breadcrumb/ng2-breadcrumb';
+import {CytoscapeSelectionService} from './services/cytoscape.service';
+
+// imports for loading & configuring the in-memory web api
 
 @NgModule({
   imports: [
@@ -42,7 +41,11 @@ import {Ng2BreadcrumbModule, BreadcrumbService} from 'ng2-breadcrumb/ng2-breadcr
     TodoTextInputComponent,
     CytoscapeComponent
   ],
-  providers: [EcodService, BreadcrumbService],
+  providers: [
+    EcodService,
+    BreadcrumbService,
+    CytoscapeSelectionService
+  ],
   bootstrap: [RootComponent]
 })
 export class AppModule {}
